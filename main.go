@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -17,9 +18,13 @@ func main() {
 	r.Static("/static", "./static")
 	r.LoadHTMLGlob("index.html")
 
+	var random_int int
+
+	flag.IntVar(&random_int, "l", 10, "random int long")
+
 	// 当访问根目录时，生成一个随机字符串，并重定向到"/random"路径
 	r.GET("/", func(c *gin.Context) {
-		randomString := randomString(10)
+		randomString := randomString(random_int)
 		c.Redirect(http.StatusFound, "/"+randomString)
 	})
 
@@ -93,8 +98,14 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"status": "Success"})
 
 	})
-	// 启动HTTP服务，默认在0.0.0.0:80启动服务
-	r.Run(":80")
+
+	var port string
+
+	flag.StringVar(&port, "p", ":80", "port to listen on")
+
+	flag.Parse()
+
+	r.Run(port)
 }
 
 // randomString 生成指定长度的随机字符串

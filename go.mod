@@ -1,4 +1,4 @@
-module Minimalist-Web-Notepad-Golang
+module Minimalist-Web-Notepad-Go
 
 go 1.21.8
 
