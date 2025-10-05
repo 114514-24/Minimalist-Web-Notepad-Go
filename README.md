@@ -20,8 +20,8 @@ Minimalist-Web-Notepad-Go -l 8 -p :8080
 ```
 ## 使用方法
 
-1. 访问网页： [https://t63xzx4xthip1aar.alwaysdata.net/（演示站不定期崩坏）](https://t63xzx4xthip1aar.alwaysdata.net/)
-2. 它会随机分配指定字符组成的地址，如 https://t63xzx4xthip1aar.alwaysdata.net/1234567890 ，如果想指定地址，只需要访问时手动修改，如 https://t63xzx4xthip1aar.alwaysdata.net/114514 。
+1. 访问网页
+2. 它会随机分配指定字符组成的地址，如果想指定地址，只需要访问时手动修改
 3. 在上面编辑文本
 4. 等待一会（几秒，取决于延迟），服务端就会存储网页内容到名为 114514 的文件里。
 5. 关闭网页，如果关闭太快，会来不及保存，丢失编辑。
