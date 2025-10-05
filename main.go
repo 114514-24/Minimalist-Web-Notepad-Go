@@ -2,17 +2,23 @@ package main
 
 import (
 	"flag"
-	"io/ioutil"
+	"io"
 	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	// 设置为开发模式
+	// gin.SetMode(gin.DebugMode)
+	// 设置为生产模式
+	gin.SetMode(gin.ReleaseMode)
+	// 设置为测试模式
+	// gin.SetMode(gin.TestMode)
+
 	// 创建一个默认的路由引擎
 	r := gin.Default()
 	r.Static("/static", "./static")
@@ -29,7 +35,6 @@ func main() {
 	})
 
 	r.GET("/:path", func(c *gin.Context) {
-		rand.Seed(time.Now().UnixNano())
 		path := c.Param("path")
 		filePath := "./_tmp_/" + path
 
@@ -52,7 +57,7 @@ func main() {
 			}
 		}
 
-		fileContent, err := ioutil.ReadFile(filePath)
+		fileContent, err := os.ReadFile(filePath)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": err.Error(),
@@ -69,7 +74,7 @@ func main() {
 
 	r.POST("/:path", func(c *gin.Context) {
 		// 读取POST请求的内容
-		body, err := ioutil.ReadAll(c.Request.Body)
+		body, err := io.ReadAll(c.Request.Body)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error reading request body"})
 			return
@@ -88,9 +93,27 @@ func main() {
 		}
 
 		// 写入文件
-		err = ioutil.WriteFile(filePath, body, 0644)
+		err = os.WriteFile(filePath, body, 0644)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error writing to file"})
+			return
+		}
+		// 删除空白内容
+
+		fileContent, err := os.ReadFile(filePath)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		if len(fileContent) == 0 {
+			os.Remove(filePath)
+		}
+
+		if len(body) == 0 {
+			os.Remove(filePath)
+			c.JSON(http.StatusOK, gin.H{"status": "Success"})
 			return
 		}
 
